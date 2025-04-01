@@ -1,0 +1,29 @@
+群聊，@
+{
+    "TypeName": "AddMsg",
+    "Appid": "wx_cwKfioy9eh8E3RcgPXxXx",
+    "Data": {
+        "MsgId": 686378267,
+        "FromUserName": {
+            "string": "45889318574@chatroom"
+        },
+        "ToUserName": {
+            "string": "wxid_8lcxn998d95322"
+        },
+        "MsgType": 1,
+        "Content": {
+            "string": "wxid_skgn3666o9cp21:\n@Light Source 魔攻"
+        },
+        "Status": 3,
+        "ImgStatus": 1,
+        "ImgBuf": {
+            "iLen": 0
+        },
+        "CreateTime": 1743496769,
+        "MsgSource": "<msgsource>\n\t<atuserlist><![CDATA[wxid_8lcxn998d95322]]></atuserlist>\n\t<pua>1</pua>\n\t<alnode>\n\t\t<cf>5</cf>\n\t\t<inlenlist>13</inlenlist>\n\t</alnode>\n\t<eggIncluded>1</eggIncluded>\n\t<silence>1</silence>\n\t<membercount>3</membercount>\n\t<signature>N0_V1_qYzNN3UB|v1_/LyTss2b</signature>\n\t<tmp_node>\n\t\t<publisher-id></publisher-id>\n\t</tmp_node>\n</msgsource>\n",
+        "PushContent": "超人不会飞在群聊中@了你",
+        "NewMsgId": 9141704737555059246,
+        "MsgSeq": 835746743
+    },
+    "Wxid": "wxid_8lcxn998d95322"
+}

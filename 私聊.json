@@ -1,0 +1,29 @@
+私聊
+{
+    "TypeName": "AddMsg",
+    "Appid": "wx_cwKfioy9eh8E3RcgPXxXx",
+    "Data": {
+        "MsgId": 266155150,
+        "FromUserName": {
+            "string": "wxid_skgn3666o9cp21"
+        },
+        "ToUserName": {
+            "string": "wxid_8lcxn998d95322"
+        },
+        "MsgType": 1,
+        "Content": {
+            "string": "你宁愿w"
+        },
+        "Status": 3,
+        "ImgStatus": 1,
+        "ImgBuf": {
+            "iLen": 0
+        },
+        "CreateTime": 1743496822,
+        "MsgSource": "<msgsource>\n\t<pua>1</pua>\n\t<eggIncluded>1</eggIncluded>\n\t<signature>N0_V1_o9wjpriE|v1_pV4JGAm1</signature>\n\t<tmp_node>\n\t\t<publisher-id></publisher-id>\n\t</tmp_node>\n</msgsource>\n",
+        "PushContent": "超人不会飞 : 你宁愿w",
+        "NewMsgId": 4180338332108737205,
+        "MsgSeq": 835746744
+    },
+    "Wxid": "wxid_8lcxn998d95322"
+}
