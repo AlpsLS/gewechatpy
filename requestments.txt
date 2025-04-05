@@ -1,2 +1,6 @@
 gewechat-client
 flask
+dashscope
+apscheduler
+gunicorn
+flask-apscheduler
