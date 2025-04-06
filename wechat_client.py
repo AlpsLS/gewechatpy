@@ -59,3 +59,11 @@ class WeChatBot:
         logger.info("发送消息成功")
         return True
     
+    def fetch_contacts_list(self):
+        resp = self.client.fetch_contacts_list(self.app_id)
+        if resp.get('ret') != 200:
+            logger.error(f"获取通讯录列表消息失败: {resp}")
+            return
+        logger.info("获取通讯录列表成功")
+        return resp
+    

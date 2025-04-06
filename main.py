@@ -272,6 +272,15 @@ class HandleCallback:
                     success = delete_scheduler_task(task_id=content_list[1])
                     bot.post_text(to_wxid=_from_username, content=f"删除定时: {success}")
                     return
+
+                elif "查询群聊" in _content and "#" in _content:
+                    # 查询群聊信息
+                    chatroom_ids = bot.fetch_contacts_list().get("data").get('chatrooms')
+                    print(chatroom_ids)
+                    chatrooms_info = bot.get_brief_info(wxids=chatroom_ids)
+                    chatrooms_info = [{"userName": chatroom.get('userName'), "nickName": chatroom.get('nickName')} for chatroom in chatrooms_info.get('data')]
+                    bot.post_text(to_wxid=_from_username, content=f"通讯录群聊信息:\n{json.dumps(chatrooms_info, ensure_ascii=False, indent=4)}")
+                    return
                 
                 llm_answer = llm_chat(query=_content)
                 bot.post_text(to_wxid=_from_username, content=llm_answer)
