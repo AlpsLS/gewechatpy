@@ -30,10 +30,22 @@ def schedule_announcement_task(chatroom_id, content):
         logger.info(f"定时任务触发：设置群公告 chatroom_id={chatroom_id}")
         from wechat_client import WeChatBot
         bot = WeChatBot()
+        content = content + "\n\n机器人自动发送：" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         bot.set_chatroom_announcement(chatroom_id=chatroom_id, content=content)
         logger.info("群公告设置成功")
     except Exception as e:
         logger.error(f"设置群公告失败: {str(e)}")
+
+def schedule_post_text_task(to_wxid, content, ats=""):
+    """发送消息的定时任务"""
+    try:
+        logger.info(f"定时任务触发：发送消息 to_wxid={to_wxid}")
+        from wechat_client import WeChatBot
+        bot = WeChatBot()
+        bot.post_text(to_wxid=to_wxid, content=content, ats=ats)
+        logger.info("发送消息成功")
+    except Exception as e:
+        logger.error(f"发送消息失败: {str(e)}")
 
 @app.route('/scheduler/add_task', methods=['POST'])
 def add_task():
@@ -44,10 +56,22 @@ def add_task():
         run_date = data.get('run_date')
         task_id = data.get('task_id')
         params = data.get('params', {})
+        print(params)
 
         if task_type == 'announcement':
             scheduler.add_date_task(
                 func=schedule_announcement_task,
+                run_date=run_date,
+                task_id=task_id,
+                **params
+            )
+            return jsonify({
+                'status': 'success',
+                'message': f'任务已添加: {task_id} -> {run_date}'
+            })
+        elif task_type == 'send_text':
+            scheduler.add_date_task(
+                func=schedule_post_text_task,
                 run_date=run_date,
                 task_id=task_id,
                 **params

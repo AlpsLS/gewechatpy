@@ -2,6 +2,7 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
+import inspect
 
 class Logger:
     _instance = None
@@ -33,7 +34,7 @@ class Logger:
         
         # 日志格式
         formatter = logging.Formatter(
-            '%(asctime)s [%(levelname)s] %(filename)s:%(lineno)d - %(message)s',
+            '%(asctime)s [%(levelname)s] %(caller_file)s:%(caller_line)d - %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
         
@@ -58,23 +59,57 @@ class Logger:
         
         self._initialized = True
     
+    def _get_caller_info(self):
+        """获取调用者的信息"""
+        frame = inspect.currentframe()
+        # 跳过当前方法
+        frame = frame.f_back
+        # 跳过装饰器方法
+        while frame.f_code.co_filename.endswith('logger.py'):
+            frame = frame.f_back
+        return frame
+    
     def debug(self, message):
-        self.logger.debug(message)
+        frame = self._get_caller_info()
+        self.logger.debug(message, extra={
+            'caller_file': frame.f_code.co_filename,
+            'caller_line': frame.f_lineno
+        })
     
     def info(self, message):
-        self.logger.info(message)
+        frame = self._get_caller_info()
+        self.logger.info(message, extra={
+            'caller_file': frame.f_code.co_filename,
+            'caller_line': frame.f_lineno
+        })
     
     def warning(self, message):
-        self.logger.warning(message)
+        frame = self._get_caller_info()
+        self.logger.warning(message, extra={
+            'caller_file': frame.f_code.co_filename,
+            'caller_line': frame.f_lineno
+        })
     
     def error(self, message):
-        self.logger.error(message)
+        frame = self._get_caller_info()
+        self.logger.error(message, extra={
+            'caller_file': frame.f_code.co_filename,
+            'caller_line': frame.f_lineno
+        })
     
     def critical(self, message):
-        self.logger.critical(message)
+        frame = self._get_caller_info()
+        self.logger.critical(message, extra={
+            'caller_file': frame.f_code.co_filename,
+            'caller_line': frame.f_lineno
+        })
     
     def exception(self, message):
-        self.logger.exception(message)
+        frame = self._get_caller_info()
+        self.logger.exception(message, extra={
+            'caller_file': frame.f_code.co_filename,
+            'caller_line': frame.f_lineno
+        })
 
 # 创建全局logger实例
 logger = Logger()

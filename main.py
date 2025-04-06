@@ -40,6 +40,36 @@ def add_scheduler_task(task_type, run_date, task_id, **params):
     except Exception as e:
         logger.error(f"请求调度器服务失败: {str(e)}")
         return False
+    
+def list_scheduler_task():
+    """查询调度任务"""
+    try:
+        response = requests.get(
+            f"{SCHEDULER_URL}/scheduler/list_tasks"
+        )
+        if response.status_code == 200:
+            return response.json()
+        else:
+            logger.error(f"查询任务失败: {response.text}")
+            return None
+    except Exception as e:
+        logger.error(f"请求调度器服务失败: {str(e)}")
+        return False
+    
+def delete_scheduler_task(task_id):
+    """删除调度任务"""
+    try:
+        response = requests.delete(
+            f"{SCHEDULER_URL}/scheduler/remove_task/{task_id}"
+        )
+        if response.status_code == 200:
+            return response.json()
+        else:
+            logger.error(f"删除任务失败: {response.text}")
+            return None
+    except Exception as e:
+        logger.error(f"请求调度器服务失败: {str(e)}")
+        return False
 
 @app.route('/v2/api/callback/collect', methods=['POST'])
 def wechat_callback():
@@ -198,31 +228,49 @@ class HandleCallback:
             else:
                 logger.info("私聊")
                 
-                if "设置群公告" in _content and "#" in _content:
+                if "添加定时任务" in _content and "#" in _content:
                     content_list = _content.split("#")
                     content_list = [c.strip() for c in content_list if c.strip() != '\n' and c.strip() != '']
-                    logger.info(f"设置群公告: {content_list}")
-                    chatroom_id = content_list[1]
-                    schedule_time = content_list[2]
+                    logger.info(f"定时任务信息: {content_list}")
+                    description = content_list[1]
+                    chatroom_id = content_list[2]
+                    schedule_time = content_list[3]
                     content = content_list[-1]
-                    content = content + "\n\n机器人自动更新：" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+                    content = "@所有人\n" + content
                     
                     # 注册定时任务
-                    task_id = f"announcement_{chatroom_id}_{int(time.time())}"
+                    task_id = f"{int(time.time()*1000)}"
                     success = add_scheduler_task(
-                        task_type='announcement',
+                        task_type='send_text',
                         run_date=schedule_time,
                         task_id=task_id,
-                        chatroom_id=chatroom_id,
-                        content=content
+                        to_wxid=chatroom_id,
+                        content=content,
+                        ats="notify@all"
                     )
                     
                     if success:
-                        logger.info(f"已添加群公告定时任务: {task_id} -> {schedule_time}")
-                        bot.post_text(to_wxid=_from_username, content=f"已设置定时任务，将在 {schedule_time} 更新群公告")
+                        logger.info(f"已添加群定时任务: {task_id} -> {schedule_time}")
+                        bot.post_text(to_wxid=_from_username, content=f"已设置定时任务[{task_id}]，将在 {schedule_time} 执行定时任务：{description}。 内容：\n{content}")
+
                     else:
                         logger.error("添加定时任务失败")
                         bot.post_text(to_wxid=_from_username, content="设置定时任务失败，请稍后重试")
+                    return
+                
+                elif "查询定时任务" in _content and "#" in _content:
+                    # 查询定时任务
+                    success = list_scheduler_task()
+                    bot.post_text(to_wxid=_from_username, content=f"定时任务列表:\n{json.dumps(success, ensure_ascii=False, indent=4)}")
+                    return
+                
+                elif "删除定时任务" in _content and "#" in _content:
+                    # 删除定时任务
+                    content_list = _content.split("#")
+                    content_list = [c.strip() for c in content_list if c.strip() != '\n' and c.strip() != '']
+                    task_id = content_list[1]
+                    success = delete_scheduler_task(task_id=content_list[1])
+                    bot.post_text(to_wxid=_from_username, content=f"删除定时: {success}")
                     return
                 
                 llm_answer = llm_chat(query=_content)
