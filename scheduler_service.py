@@ -42,6 +42,7 @@ def schedule_post_text_task(to_wxid, content, ats=""):
         logger.info(f"定时任务触发：发送消息 to_wxid={to_wxid}")
         from wechat_client import WeChatBot
         bot = WeChatBot()
+        content = content + "\n\n机器人自动发送：" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         bot.post_text(to_wxid=to_wxid, content=content, ats=ats)
         logger.info("发送消息成功")
     except Exception as e:
@@ -56,7 +57,6 @@ def add_task():
         run_date = data.get('run_date')
         task_id = data.get('task_id')
         params = data.get('params', {})
-        print(params)
 
         if task_type == 'announcement':
             scheduler.add_date_task(
