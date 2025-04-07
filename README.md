@@ -16,6 +16,7 @@
 - Python 3.8+
 - pip
 - 微信客户端（用于登录）
+- 提前部署好gewechat服务，参考：https://github.com/Devo919/Gewechat
 
 ## 安装依赖
 
