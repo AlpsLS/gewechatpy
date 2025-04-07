@@ -5,8 +5,8 @@ class WeChatBot:
     def __init__(self):
         # 配置参数
         self.base_url = "http://127.0.0.1:2531/v2/api"
-        self.token = "76e2b8c15d3a4995a6cecbb7e4557967"
-        self.app_id = "wx_cwKfioy9eh8E3RcgPXxXx"
+        self.token = "xxx"
+        self.app_id = "xxx"
         # 创建 GewechatClient 实例
         self.client = GewechatClient(self.base_url, self.token)
 

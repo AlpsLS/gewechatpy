@@ -228,7 +228,8 @@ class HandleCallback:
             else:
                 logger.info("私聊")
                 
-                if "添加定时任务" in _content and "#" in _content:
+                if "#添加定时任务" in _content.replace(" ", ""):
+                    # 注册定时任务
                     content_list = _content.split("#")
                     content_list = [c.strip() for c in content_list if c.strip() != '\n' and c.strip() != '']
                     logger.info(f"定时任务信息: {content_list}")
@@ -238,7 +239,6 @@ class HandleCallback:
                     content = content_list[-1]
                     content = "@所有人\n" + content
                     
-                    # 注册定时任务
                     task_id = f"{int(time.time()*1000)}"
                     success = add_scheduler_task(
                         task_type='send_text',
@@ -258,13 +258,13 @@ class HandleCallback:
                         bot.post_text(to_wxid=_from_username, content="设置定时任务失败，请稍后重试")
                     return
                 
-                elif "查询定时任务" in _content and "#" in _content:
+                elif "#查询定时任务" in _content.replace(" ", ""):
                     # 查询定时任务
                     success = list_scheduler_task()
                     bot.post_text(to_wxid=_from_username, content=f"定时任务列表:\n{json.dumps(success, ensure_ascii=False, indent=4)}")
                     return
                 
-                elif "删除定时任务" in _content and "#" in _content:
+                elif "#删除定时任务" in _content.replace(" ", ""):
                     # 删除定时任务
                     content_list = _content.split("#")
                     content_list = [c.strip() for c in content_list if c.strip() != '\n' and c.strip() != '']
@@ -273,7 +273,7 @@ class HandleCallback:
                     bot.post_text(to_wxid=_from_username, content=f"删除定时: {success}")
                     return
 
-                elif "查询群聊" in _content and "#" in _content:
+                elif "#查询群聊" in _content.replace(" ", ""):
                     # 查询群聊信息
                     chatroom_ids = bot.fetch_contacts_list().get("data").get('chatrooms')
                     print(chatroom_ids)
