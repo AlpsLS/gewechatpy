@@ -4,7 +4,7 @@ from logger import logger
 class WeChatBot:
     def __init__(self):
         # 配置参数
-        self.base_url = "http://127.0.0.1:2531/v2/api"
+        self.base_url = "http://127.0.0.1:2531/v2/api"  # 无需修改
         self.token = "xxx"
         self.app_id = "xxx"
         # 创建 GewechatClient 实例

@@ -38,8 +38,67 @@ gewechatpy/
 
 ## 部署步骤
 
+### 提前先获取token和appId
+
+先获取token，返回值里的data就是token
+```bash
+curl --location --request POST 'http://127.0.0.1:2531/v2/api/tools/getTokenId'
+```
+
+返回
+```json
+{
+    "ret": 200,
+    "msg": "执行成功",
+    "data": "76e2b8c15d3a4995a6cecbb7e4557967"
+}
+```
+
+获取app_id（header里换成上一步获取到的token），返回值里的data里的appid。
+首次登录传空，会自动触发创建设备，掉线后重新登录则必须传接口返回的appId，注意同一个号避免重复创建设备，以免触发官方风控
+```bash
+curl --location 'http://127.0.0.1:2531/v2/api/login/getLoginQrCode' \
+--header 'X-GEWE-TOKEN: 76e2b8c15d3a4995a6cecbb7e4557967' \
+--header 'Content-Type: application/json' \
+--data '{
+  "appId": ""
+}'
+```
+
+返回示例：
+```json
+{
+  "ret": 200,
+  "msg": "操作成功",
+  "data": {
+    "appId": "wx_wR_U4zPj2M_OTS3BCyoE4",
+    "qrData": "http://weixin.qq.com/x/4dmHZZMtoLbHoLZwd1wE",
+    "qrImgBase64": "xxxx",
+    "uuid": "4dmHZZMtoLbHoLZwd1wE"
+  }
+}
+```
+
+获取到token和appId后，修改wechat_client.py里的token和appId，以后都不用修改了。
+```python
+    def __init__(self):
+        # 配置参数
+        self.base_url = "http://127.0.0.1:2531/v2/api"
+        self.token = "xxx"
+        self.app_id = "xxx"
+```
+
+```python
+python main.py 
+2025-04-07 14:28:32 [INFO] main.py:346 - 请按顺序依次启动：
+2025-04-07 14:28:32 [INFO] main.py:347 -   -l 或 --login     : 登录微信
+2025-04-07 14:28:32 [INFO] main.py:348 -   -s 或 --scheduler : 启动调度器服务（另启一个终端）
+2025-04-07 14:28:32 [INFO] main.py:349 -   -r 或 --run       : 启动主服务（另启动一个终端）
+2025-04-07 14:28:32 [INFO] main.py:350 -   -c 或 --callback  : 设置回调（另启动一个终端）
+```
 ### 1. 登录微信
 
+启动服务，扫码登录
 ```bash
 python main.py -l
 ```
@@ -50,7 +109,7 @@ python main.py -l
 ### 2. 启动调度器服务
 
 ```bash
-python scheduler_service.py
+python main.py -s
 ```
 
 调度器服务将在本地 9920 端口运行，用于管理定时任务。
@@ -65,8 +124,12 @@ python main.py -r
 
 主服务将在 9919 端口运行，处理微信消息和回调。
 
-### 4. 设置微信回调
+### 4. 设置微信回调（只需设置一次）
 
+先修改main.py这个地方的配置，改成本地ip地址，不要使用127.0.0.1（微信登录成功之后才能设置成功）
+```python
+      bot.set_callback(callback_url=f"http://{ip}:9919/v2/api/callback/collect")
+```
 ```bash
 python main.py -c
 ```

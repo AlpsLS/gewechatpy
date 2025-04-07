@@ -340,7 +340,7 @@ if __name__ == "__main__":
         
     elif args.callback:
         logger.info("设置回调地址...")
-        bot.set_callback(callback_url="http://10.12.10.28:9919/v2/api/callback/collect")
+        bot.set_callback(callback_url="http://192.168.1.100:9919/v2/api/callback/collect")
     
     else:
         logger.info("请按顺序依次启动：")
