@@ -92,7 +92,7 @@ def llm_chat_dify(query):
         "files": []
     })
     headers = {
-    'Authorization': 'Bearer app-EK7JRHbsOxOVPfNwn8AZeN1c',
+    'Authorization': 'Bearer xxxx',
     'Content-Type': 'application/json'
     }
 
